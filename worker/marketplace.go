@@ -98,12 +98,12 @@ func retryApp(app *AppRequest) {
 	return
 }
 
-func requestData(urlLang string) (statusCode int, respBody []byte) {
+func requestData(client *http.Client, urlLang string) (statusCode int, respBody []byte) {
 	data := url.Values{
 		"login": {""},
 	}
 
-	resp, err := http.PostForm(urlLang, data)
+	resp, err := client.PostForm(urlLang, data)
 	if err != nil || resp.StatusCode != 200 {
 		fmt.Printf("Errror %s", resp)
 		if err == nil {
@@ -141,7 +141,7 @@ func getRawApplication(app *AppRequest) {
 
 	urlApp := baseUrl + strings.Join(queryList, "&")
 
-	statusCode, respBody := requestData(urlApp)
+	statusCode, respBody := requestData(client, urlApp)
 	time.Sleep(500 * time.Millisecond)
 	if statusCode == 404 {
 		fmt.Printf("Application not found: %s\n", app.Id)
